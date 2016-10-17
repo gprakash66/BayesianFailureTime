@@ -1,0 +1,37 @@
+model
+	{
+		for( i in 1 : N ) {      
+		  			for( j in 1 : T ) {
+			y[i , j] ~ dnorm(mu[i , j],tau.theta)
+				mu[i , j] <- (1/beta[i]) * t[j]
+				Rt[i,j] <- exp(-(scale.beta/pow(40,shape.beta))*pow(t[j],shape.beta))	
+				
+			}
+			beta[i] ~ dweib(shape.beta, scale.beta)
+			 # in Winbug order is reverse W(shape, scale)  not W(scale, shape)			
+
+		}
+			#Prior
+        tau.theta ~ dgamma(0.01, 0.01)
+	    shape.beta ~ dgamma(0.01, 0.01) 
+	  # shape parameter is same in Matlab and Winbug
+		scale.beta ~ dgamma(0.01, 0.01)
+		sigma.theta <- 1/sqrt(tau.theta) 
+		scale.betaMatlab <- exp(-log(scale.beta)/shape.beta)
+		# Expression for weibull Pdf is same in Winbug and Hamda book
+       # Reliability at time t Expression Hamda book page 272	
+		
+		                  for (i in 1:T) {
+		                                    R[i] <-Rt[1,i]
+		                                      }
+		
+		talpha <-pow((-pow(40,shape.beta)/scale.beta)*log(1-0.1), 1/shape.beta)
+		
+	}
+	
+	Data  click on one of the arrows to open the data 						
+		#inits				
+		  list(beta  = c(4,4,6,4,5,6,6,7,6,6,6,6,8,6,9),
+		 tau.theta = 0.01, shape.beta = 2, scale.beta = 2)
+		
+		
